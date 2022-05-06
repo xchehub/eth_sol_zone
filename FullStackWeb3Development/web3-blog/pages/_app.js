@@ -4,7 +4,7 @@ import {css} from '@emotion/css'
 import {ethers} from 'ethers'
 import Web3Modal from 'web3modal'
 import WalletConnectProvider from '@walletconnect/web3-provider'
-import {AccountContext} from '../Context.js'
+import {AccountContext} from '../context.js'
 import {ownerAddress} from '../config'
 import 'easymde/dist/easymde.min.css'
 
