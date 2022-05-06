@@ -1,3 +1,4 @@
+import '../styles/globals.css'
 import {useState} from 'react'
 import Link from 'next/link'
 import {css} from '@emotion/css'
@@ -15,7 +16,7 @@ function App({ Component, pageProps }) {
     const web3Modal = new Web3Modal({
       cacheProvider: false,
       providerOptions: {
-        walletConnect: {
+        walletconnect: {
           package: WalletConnectProvider,
           options: {
             infuraId: '6b0681cef1da4236b6c2157508f4dad0'
@@ -34,7 +35,7 @@ function App({ Component, pageProps }) {
       const accounts = await provider.listAccounts()
       setAccount(accounts[0])
     } catch (err) {
-      consol.log('error:', err)
+      console.log('error:', err)
     }
   }
   return (
@@ -46,7 +47,7 @@ function App({ Component, pageProps }) {
               <img
                 src='/logo.svg'
                 alt="React Logo"
-                style={{ width: '50px'}}
+                style={{ width: '50px' }}
               />
             </a>
           </Link>
@@ -70,7 +71,7 @@ function App({ Component, pageProps }) {
           }
         </div>
         <div className={linkContainer}>
-          <Link href="/">
+          <Link href="/" >
             <a className={link}>
               Home
             </a>
@@ -98,6 +99,7 @@ function App({ Component, pageProps }) {
 const accountInfo = css`
   width: 100%;
   display: flex;
+  flex: 1;
   justify-content: flex-end;
   font-size: 12px;
 `

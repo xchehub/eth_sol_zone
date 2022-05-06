@@ -3,24 +3,23 @@ import { useRouter } from 'next/router'
 import ReactMarkdown from 'react-markdown'
 import { css } from '@emotion/css'
 import dynamic from 'next/dynamic'
-import {ethers} from 'ethers'
-import {create} from 'ipfs-http-client'
+import { ethers } from 'ethers'
+import { create } from 'ipfs-http-client'
 
 import { contractAddress } from '../../config'
 import Blog from '../../artifacts/contracts/Blog.sol/Blog.json'
-import Post from '../post/[id]'
 
 const ipfsURI = 'https://ipfs.io/ipfs/'
 const client = create('https://ipfs.infura.io:5001/api/v0')
 
 const SimpleMDE = dynamic(
-    () => import('react-simplemed-editor'),
+    () => import('react-simplemde-editor'),
     {ssr: false}
 )
 
-export default function EditPost() {
+export default function Post() {
     const [post,setPost] = useState(null)
-    const [editing, setEditing] = usestate(true)
+    const [editing, setEditing] = useState(true)
 
     const router = useRouter()
     const { id } = router.query
@@ -32,10 +31,10 @@ export default function EditPost() {
     async function fetchPost() {
         if (!id) return
         let provider
-        if (process.env.ENVIRONMENT === 'local') {
+        if (process.env.NEXT_PUBLIC_ENVIRONMENT === 'local') {
             provider = new ethers.providers.JsonRpcProvider()
-        } else if (process.env.ENVIRONMENT === 'testnet') {
-            provider = new ethers.providers.JsonRpsProvider('https://rpc-mumbai.matic.today')
+        } else if (process.env.NEXT_PUBLIC_ENVIRONMENT === 'testnet') {
+            provider = new ethers.providers.JsonRpcProvider('https://rpc-mumbai.matic.today')
         } else {
             provider = new ethers.providers.JsonRpcProvider('https://polygon-rpc.com/')
         }
@@ -53,24 +52,24 @@ export default function EditPost() {
             data.coverImagePath = coverImagePath
         }
 
-        data.id = postId
+        data.id = postId;
         setPost(data)
+    }
 
-        async function savePostToIpfs() {
-            try {
-                const added = await client.add(JSON.stringify(post))
-                return added.path
-            } catch (err) {
-                console.log('error: ', err)
-            }
+    async function savePostToIpfs() {
+        try {
+            const added = await client.add(JSON.stringify(post))
+            return added.path
+        } catch (err) {
+            console.log('error: ', err)
         }
     }
 
     async function updatePost() {
-        const hash = await saveToIpfs()
-        const provider = new ethers.providers.Web3Provider(window.ethersum)
+        const hash = await savePostToIpfs()
+        const provider = new ethers.providers.Web3Provider(window.ethereum)
         const signer = provider.getSigner()
-        const contract = new ethers.Contract(contractAddress, Blog.abi, provider)
+        const contract = new ethers.Contract(contractAddress, Blog.abi, signer)
         await contract.updatePost(post.id, post.title, hash, true)
         router.push('/')
     }
@@ -93,7 +92,7 @@ export default function EditPost() {
                             className={mdEditor}
                             placeholder="What's on your mind?"
                             value={post.content}
-                            onChange={value => setPost({ ...Post, content: value})}
+                            onChange={value => setPost({ ...post, content: value})}
                         />
                         <button className={button} onClick={updatePost}>Update post</button>
                     </div>
@@ -103,7 +102,7 @@ export default function EditPost() {
                 !editing && (
                     <div>
                         {
-                            post.coverImage && (
+                            post.coverImagePath && (
                                 <img
                                     src={post.coverImagePath}
                                     className={coverImageStyle}
@@ -111,7 +110,7 @@ export default function EditPost() {
                             )
                         }
                         <h1>{post.title}</h1>
-                        <div className={contentcontainer}>
+                        <div className={contentContainer}>
                             <ReactMarkdown>{post.content}</ReactMarkdown>
                         </div>
                     </div>

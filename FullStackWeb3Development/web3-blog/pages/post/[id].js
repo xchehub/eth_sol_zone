@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { css } from '@emotion/css'
 import { ethers } from 'ethers'
-import { AcclountContext } from '../../context'
+import { AccountContext } from '../../context'
 
 import {contractAddress, ownerAddress} from '../../config'
 import Blog from '../../artifacts/contracts/Blog.sol/Blog.json'
@@ -59,7 +59,7 @@ export async function getStaticPaths() {
     if (process.env.ENVIRONMENT === 'local') {
         provider = new ethers.providers.JsonRpcProvider()
     } else if (process.env.ENVIRONMENT === 'testnet') {
-        provider = new ethers.providers.JsonRpsProvider('https://rpc-mumbai.matic.today')
+        provider = new ethers.providers.JsonRpcProvider('https://rpc-mumbai.matic.today')
     } else {
         provider = new ethers.providers.JsonRpcProvider('https://polygon-rpc.com/')
     }

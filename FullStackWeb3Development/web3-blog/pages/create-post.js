@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect} from 'react'
-import { Router, useRouter } from 'next/router'
+import { useRouter } from 'next/router'
 import dynamic from 'next/dynamic'
 import { css } from '@emotion/css'
 import { ethers } from 'ethers'
@@ -16,10 +16,10 @@ const SimpleMDE = dynamic(
     {ssr: false}
 )
 
-const initialState = {title: '', context: ''}
+const initialState = {title: '', content: ''}
 
 function CreatePost() {
-    const [post, setPost] = useStae(initialState)
+    const [post, setPost] = useState(initialState)
     const [image, setImage] = useState(null)
     const [loaded, setLoaded] = useState(false)
 
@@ -35,6 +35,13 @@ function CreatePost() {
 
     function onChange(e) {
         setPost(() => ({...post, [e.target.name]: e.target.value }))
+    }
+
+    async function createNewPost() {
+        if (!title|| !content) return
+        const hash = await savePostToIpfs()
+        await savePost(hash)
+        router.push(`/`)
     }
 
     async function savePostToIpfs() {
@@ -55,6 +62,7 @@ function CreatePost() {
 
             try {
                 const val = await contract.createPost(post.title, hash)
+                await provider.waitForTransaction(val.hash)
                 console.log('val: ', val)
             } catch (err) {
                 console.log('Error: ', err)
@@ -62,12 +70,10 @@ function CreatePost() {
         }
     }
 
-    async function createNewPost() {
-        if (!title|| !contract) {
-            const hash = await savePostToIpfs()
-            await savePost(hash)
-            Router.push('/')
-        }
+
+    function triggerOnChange() {
+        /* trigger handleFileChange handler of hidden file input */
+        fileRef.current.click()
     }
 
     async function handleFileChange(e) {
@@ -76,10 +82,6 @@ function CreatePost() {
         const added = await client.add(uploadedFile)
         setPost(state => ({...state, coverImage: added.path}))
         setImage(uploadedFile)
-    }
-
-    function triggerOnChange() {
-        fileRef.current.click()
     }
 
     return (

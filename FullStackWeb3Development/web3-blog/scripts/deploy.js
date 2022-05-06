@@ -1,5 +1,5 @@
 const hre = require("hardhat");
-const fs = require("fs");
+const fs = require('fs');
 
 async function main() {
   const Blog = await hre.ethers.getContractFactory("Blog");
