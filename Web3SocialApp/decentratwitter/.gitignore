@@ -28,6 +28,8 @@ coverage
 coverage.json
 typechain
 
+src/contractsData/*.json
+
 #Hardhat files
 cache
 artifacts
