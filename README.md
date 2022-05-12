@@ -9,3 +9,6 @@
 - Code a Web 3.0 Social Media App Like Twitter Step-by-Step
   - https://www.youtube.com/watch?v=xDDV-ddhr1M
   - https://github.com/dappuniversity/decentratwitter
+## Build a Web3 Game: Code Along
+- How To Build a Web3 Game: Code Along
+  - https://www.youtube.com/watch?v=bPfTBr2D1gc
